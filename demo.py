@@ -10,17 +10,18 @@ import threading
 from datetime import datetime
 from time import sleep
 import serial.tools.list_ports
-# from PyQt5.QtCore import pyqtSlot, QDir, QFile, QIODevice, QTextStream, Qt
 import sys
 import matplotlib
 # Make sure that we are using QT5
 matplotlib.use('Qt5Agg')
-from PyQt5 import QtCore, QtWidgets
+
+import qtawesome
 from numpy import arange, sin, pi
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 from ui.mainwindow_ui import Ui_MainWindow
 flagConnect = False
 logginNum = 0
@@ -35,8 +36,8 @@ class MyMplCanvas(FigureCanvas):
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
+                                   QSizePolicy.Expanding,
+                                   QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
     def compute_initial_figure(self):
         pass
@@ -50,8 +51,8 @@ class MyStaticMplCanvas(MyMplCanvas):
         self.axes.plot(t, s)
 
 class IctTest(QMainWindow, Ui_MainWindow):
-    infoMsgPrint = QtCore.pyqtSignal(str)
-    operMsgPrint = QtCore.pyqtSignal(str)
+    infoMsgPrint = pyqtSignal(str)
+    operMsgPrint = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super(IctTest, self).__init__(parent)
@@ -63,29 +64,28 @@ class IctTest(QMainWindow, Ui_MainWindow):
     def initUI(self):
         # 增加左上角logo图标
         self.setWindowIcon(QIcon(':/ICT.png'))
+        #给工具栏添加带图形按钮
+        openfile = QAction(qtawesome.icon('fa.file-text-o',color="green"),"打开文件",self)
+        self.main_ui.toolBar.addAction(openfile)
+        printfile = QAction(qtawesome.icon('fa.print',color="green"),"打印文件",self)
+        self.main_ui.toolBar.addAction(printfile)
         # 设置底部任务栏图标和左上角同步
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
-        self.get_serials_name()
+        self.get_serials_name()#初始化获取系统设备串口连接情况
         # -----------tablewidget表格中自定义下拉填充-----------
-        self.main_ui.combox_compress = QtWidgets.QComboBox()
+        self.main_ui.combox_compress = QComboBox()
         self.main_ui.combox_compress.addItems(['on', 'off'])
         self.main_ui.tableWidget.setCellWidget(0, 1, self.main_ui.combox_compress)
-        self.main_ui.combox_interleave = QtWidgets.QComboBox()
+        self.main_ui.combox_interleave = QComboBox()
         self.main_ui.combox_interleave.addItems(['off', 'on'])
         self.main_ui.tableWidget.setCellWidget(1, 1, self.main_ui.combox_interleave)
-        self.main_ui.combox_ccnum = QtWidgets.QComboBox()
+        self.main_ui.combox_ccnum = QComboBox()
         self.main_ui.combox_ccnum.setEditable(True)  # 设置下拉box可配
-        self.main_ui.combox_ccnum.addItems(['1', '2', '3'])
+        ccnumItems = [str(i) for i in range(15)]
+        self.main_ui.combox_ccnum.addItems(ccnumItems)
         self.main_ui.tableWidget.setCellWidget(2, 1, self.main_ui.combox_ccnum)
         self.main_ui.combox_ccnum.currentTextChanged[str].connect(self.carrier_cfg_tablewidget)
-        # # -----------生成载波采样率下拉按钮---------------------
-        # self.main_ui.comboBox_msps = QtWidgets.QComboBox()
-        # x = 7.68
-        # listx = []
-        # for i in range(1, 17):
-        #     listx.append(str('{0:.2f}'.format(x * i)))
-        # self.main_ui.comboBox_msps.addItems(listx)
-        # self.main_ui.tableWidget.setCellWidget(2, 1, self.main_ui.comboBox_msps)
+
         # -------------窗口打印部件槽连接-----------------------
         self.infoMsgPrint.connect(self.information_print)
         self.operMsgPrint.connect(self.operation_print)
@@ -101,10 +101,24 @@ class IctTest(QMainWindow, Ui_MainWindow):
         self.main_ui.pushButton_3.clicked.connect(self.infoByScriptName)
         self.main_ui.pushButton_download.clicked.connect(self.tftpd_32_open)
         self.main_ui.pushButton_openFile.clicked.connect(self.getFirmwareFile)
+        self.main_ui.tableWidget_2.setContextMenuPolicy(Qt.CustomContextMenu) #允许右击产生菜单
+        self.main_ui.tableWidget_2.customContextMenuRequested.connect(self.window_rightMenuShow)  # 设置右击tablewidget窗口时弹窗
         self.read_yaml()#读取自定义的脚本
-        l = QtWidgets.QVBoxLayout(self.main_ui.widget2)
+        l = QVBoxLayout(self.main_ui.widget2)
         sc = MyStaticMplCanvas(self.main_ui.widget2, width=5, height=4, dpi=100)
         l.addWidget(sc)
+
+    #右键小弹窗槽函数
+    def window_rightMenuShow(self):
+        contextMenu = QMenu()
+        action1 = contextMenu.addAction('清空')
+        action1.triggered.connect(self.click_event1)
+        # 菜单显示前,将它移动到鼠标点击的位置
+        contextMenu.exec_(QCursor.pos())  # 在鼠标位置显示
+
+    #右击菜单“清空”槽函数
+    def click_event1(self):
+        self.main_ui.tableWidget_2.clearContents()
 
     # DFE数量下拉值改变触发的槽函数
     def carrier_cfg_tablewidget(self, cc_num):
@@ -113,7 +127,7 @@ class IctTest(QMainWindow, Ui_MainWindow):
         a = int(cc_num)
         for i in range(a):
             chCC = str(i+1)
-            item = QTableWidgetItem(chCC)
+            item = QTableWidgetItem(qtawesome.icon('fa.magic',color="black"),chCC) #设置qtAwesome图标
             self.main_ui.tableWidget_2.setItem(i, 0, item)
             item = QTableWidgetItem(carrierCfg[0])
             self.main_ui.tableWidget_2.setItem(i, 1, item)
@@ -125,6 +139,42 @@ class IctTest(QMainWindow, Ui_MainWindow):
             self.main_ui.tableWidget_2.setItem(i, 4, item)
             item = QTableWidgetItem('0')
             self.main_ui.tableWidget_2.setItem(i, 5, item)
+            item = QTableWidgetItem('0')
+            self.main_ui.tableWidget_2.setItem(i, 6, item)
+        # for i in range(a):
+        #     chCC = str(i+1)
+        #     item = QTableWidgetItem(chCC)
+        #     self.main_ui.tableWidget_2.setItem(i, 0, item)
+        #     # -----------生成载波采样率下拉按钮---------------------
+        #     self.main_ui.comboBox_msps = QtWidgets.QComboBox()
+        #     x = 7.68
+        #     listx = []
+        #     for j in range(1, 17):
+        #         listx.append(str('{0:.2f}'.format(x * j)))
+        #     self.main_ui.comboBox_msps.addItems(listx)
+        #     self.main_ui.tableWidget_2.setCellWidget(i, 1, self.main_ui.comboBox_msps)
+        #     #------------width----------
+        #     item = QTableWidgetItem(carrierCfg[3])
+        #     self.main_ui.tableWidget_2.setItem(i, 2, item)
+        #     #------------生成DFE CH下拉按钮----------------------
+        #     self.main_ui.comboBox_dfech = QtWidgets.QComboBox()
+        #     listy = [str(k) for k in range(10) ]
+        #     self.main_ui.comboBox_dfech.addItems((listy))
+        #     self.main_ui.tableWidget_2.setCellWidget(i,3,self.main_ui.comboBox_dfech)
+        #     # ------------生成CC ID下拉按钮----------------------
+        #     self.main_ui.comboBox_ccid = QtWidgets.QComboBox()
+        #     listy = [str(k) for k in range(3) ]
+        #     self.main_ui.comboBox_ccid.addItems((listy))
+        #     self.main_ui.tableWidget_2.setCellWidget(i,4,self.main_ui.comboBox_ccid)
+        #     # ------------生成天线ID下拉按钮----------------------
+        #     self.main_ui.comboBox_antid = QtWidgets.QComboBox()
+        #     listy = [str(k) for k in range(2) ]
+        #     self.main_ui.comboBox_antid.addItems((listy))
+        #     self.main_ui.tableWidget_2.setCellWidget(i,5,self.main_ui.comboBox_antid)
+        #     # ------------时延---------------------
+        #     item = QTableWidgetItem('0')
+        #     self.main_ui.tableWidget_2.setItem(i, 6, item)
+
 
     #获取UI界面参数进行配置
     def get_script_cfg(self):
@@ -136,18 +186,21 @@ class IctTest(QMainWindow, Ui_MainWindow):
         for i in range(rowCount):
             dictMsg ={}
             chcfg = []
-            for j in range(6):
+            for j in range(7):
                 cellItem = self.main_ui.tableWidget_2.item(i, j).text()
                 chcfg.append(cellItem)
             dictMsg['msps']=chcfg[1]
             dictMsg['width']=chcfg[2]
             dictMsg['ch_num'] = chcfg[3]
-            dictMsg['ch_cc']=chcfg[0]
-            dictMsg['ant_num']=chcfg[4]
-            dictMsg['offset'] =chcfg[5]
+            dictMsg['ch_cc']=chcfg[4]
+            dictMsg['ant_num']=chcfg[5]
+            dictMsg['offset'] =chcfg[6]
             data.append(dictMsg)
         sendData = {"compress":compress,"interleave":interleave,"ch_num":rowCount,"data":data}
         self.ser_cfg_send(sendData)
+        # combox_list_content = self.main_ui.tableWidget_2.cellWidget(1,1).currentText()
+        # combox_list_content1 = self.main_ui.tableWidget_2.cellWidget(0, 1).currentText()
+
 
     # 配置下发
     def ser_cfg_send(self,dictMsg):
@@ -180,9 +233,10 @@ class IctTest(QMainWindow, Ui_MainWindow):
     #填写保存界面
     def save_dialog(self):
         self.saveDialog = QDialog()
+        self.saveDialog.resize(250,40)
         self.saveDialog.setWindowTitle("保存配置名")
         self.saveDialog.setWindowIcon(QIcon("./image/ICT.ico"))
-        self.saveDialog.okbtn = QPushButton("保存")
+        self.saveDialog.okbtn = QPushButton(qtawesome.icon("fa.save",color="blue"),"保存")
         self.saveDialog.lineEdit = QLineEdit()
         layout = QFormLayout(self.saveDialog)
         layout.addRow(self.saveDialog.lineEdit,self.saveDialog.okbtn)
@@ -200,15 +254,15 @@ class IctTest(QMainWindow, Ui_MainWindow):
             data_list = [] #存放DFE载波具体信息
             for i in range(ccnum):
                 chcfg = []
-                for j in range(6):
+                for j in range(7):
                     cellItem = self.main_ui.tableWidget_2.item(i, j).text()
                     chcfg.append(cellItem)
-                data = {"ch_cc":chcfg[0],
+                data = {"ch_cc":chcfg[4],
                         "msps":chcfg[1],
                         "width":chcfg[2],
                         "ch_num":chcfg[3],
-                        "ant_num":chcfg[4],
-                        "offset":chcfg[5]
+                        "ant_num":chcfg[5],
+                        "offset":chcfg[6]
                         }
                 data_list.append(data)
             saveData = {
@@ -266,7 +320,21 @@ class IctTest(QMainWindow, Ui_MainWindow):
         try:
             scriptName = self.main_ui.comboBox_2.currentText()
             data = self.dictScript[scriptName]
-            self.operMsgPrint.emit(str(data))
+
+            self.cfgInfoDialog = QDialog()
+            self.cfgInfoDialog.setWindowTitle("配置详情")
+            self.cfgInfoDialog.setWindowIcon(qtawesome.icon('fa.magic',color="black"))
+            layout = QHBoxLayout(self.cfgInfoDialog)
+            self.model = QStandardItemModel(2,2)
+            self.model.setHorizontalHeaderLabels(["AxC id","Msgs"])
+            for row in range(2):
+                for column in range(2):
+                    item = QStandardItem("row %s ,column %s"%(row,column))
+                    self.model.setItem(row,column,item)
+            self.tableView = QTableView()
+            self.tableView.setModel(self.model)
+            layout.addWidget(self.tableView)
+            self.cfgInfoDialog.exec_()
         except:
             self.operMsgPrint.emit("当前不存在脚本")
 

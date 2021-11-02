@@ -1,57 +1,76 @@
 import sys
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
 
-class MainWindow(QMainWindow):
-    count=0
-    def __init__(self,parent=None):
-        super(MainWindow, self).__init__(parent)
-        #实例化Qmidarea区域
-        self.mdi=QMdiArea()
-        #设置为中间控件
-        self.setCentralWidget(self.mdi)
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton
 
-        #实例化菜单栏
-        bar=self.menuBar()
-        #添加主菜单
-        file=bar.addMenu('File')
-        #添加子菜单
-        file.addAction('New')
-        file.addAction('cascade')
-        file.addAction('Tiled')
+# 创建一个 application实例
+app = QApplication(sys.argv)
+win = QWidget()
+win.setWindowTitle('Web页面中的JavaScript与 QWebEngineView交互例子')
 
-        #点击QAction绑定自定义的槽函数（传递有值【QAction】）
-        file.triggered[QAction].connect(self.windowaction)
-        #设置主窗口的标题
-        self.setWindowTitle("MDI demo")
-    def windowaction(self,q):
-        print('Triggered')
+# 创建一个垂直布局器
+layout = QVBoxLayout()
+win.setLayout(layout)
 
-        if q.text()=='New':
-            #子窗口增加一个
-            MainWindow.count=MainWindow.count+1
+# 创建一个 QWebEngineView 对象
+view = QWebEngineView()
+view.setHtml('''
+  <html>
+    <head>
+      <title>A Demo Page</title>
 
-            #实例化多文档界面对象
-            sub=QMdiSubWindow()
-            #向sub内添加内部控件
-            sub.setWidget(QTextEdit())
-            #设置新建子窗口的标题
-            sub.setWindowTitle('subWindow'+str(MainWindow.count))
+      <script language="javascript">
+        // Completes the full-name control and
+        // shows the submit button
+        function completeAndReturnName() {
+          var fname = document.getElementById('fname').value;
+          var lname = document.getElementById('lname').value;
+          var full = fname + '' + lname;
 
-            #将子窗口添加到Mdi区域
-            self.mdi.addSubWindow(sub)
+          document.getElementById('fullname').value = full;
+          document.getElementById('submit-btn').style.display = 'block';
 
-            #子窗口显示
-            sub.show()
-        if q.text()=='cascade':
-            #cascadeSubWindows()：安排子窗口在Mdi区域级联显示
-            self.mdi.cascadeSubWindows()
-        if q.text()=='Tiled':
-            #tileSubWindow():安排子窗口在Mdi区域平铺显示
-            self.mdi.tileSubWindow()
-if __name__ == '__main__':
-    app=QApplication(sys.argv)
-    demo=MainWindow()
-    demo.show()
-    sys.exit(app.exec_())
+          return full;
+        }
+      </script>
+    </head>
+
+    <body>
+      <form>
+        <label for="fname">First name:</label>
+        <input type="text" name="fname" id="fname"></input>
+        <br />
+        <label for="lname">Last name:</label>
+        <input type="text" name="lname" id="lname"></input>
+        <br />
+        <label for="fullname">Full name:</label>
+        <input disabled type="text" name="fullname" id="fullname"></input>
+        <br />
+        <input style="display: none;" type="submit" id="submit-btn"></input>
+      </form>
+    </body>
+  </html>
+''')
+
+# 创建一个按钮去调用 JavaScript代码
+button = QPushButton('设置全名')
+
+
+def js_callback( result ):
+    print(result)
+
+
+def complete_name():
+    view.page().runJavaScript('completeAndReturnName();', js_callback)
+
+
+# 按钮连接 'complete_name'槽，当点击按钮是会触发信号
+button.clicked.connect(complete_name)
+
+# 把QWebView和button加载到layout布局中
+layout.addWidget(view)
+layout.addWidget(button)
+
+# 显示窗口和运行app
+win.show()
+sys.exit(app.exec_())
