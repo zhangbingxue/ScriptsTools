@@ -50,6 +50,7 @@ class MyStaticMplCanvas(MyMplCanvas):
         s = sin(2*pi*t)
         self.axes.plot(t, s)
 
+
 class IctTest(QMainWindow, Ui_MainWindow):
     infoMsgPrint = pyqtSignal(str)
     operMsgPrint = pyqtSignal(str)
@@ -69,6 +70,15 @@ class IctTest(QMainWindow, Ui_MainWindow):
         self.main_ui.toolBar.addAction(openfile)
         printfile = QAction(qtawesome.icon('fa.print',color="green"),"打印文件",self)
         self.main_ui.toolBar.addAction(printfile)
+        #给按钮设置图标
+        self.main_ui.pushButton_save.setIcon(qtawesome.icon('fa.save',color="black"))
+        self.main_ui.btnCfgSend.setIcon(qtawesome.icon('fa.download',color="black"))
+        self.main_ui.pushButtonDelete.setIcon(qtawesome.icon('fa.trash-o', color="black"))
+        self.main_ui.pushButton.setIcon(qtawesome.icon('fa.download', color="black"))
+        self.main_ui.pushButton_3.setIcon(qtawesome.icon('fa.file-text-o', color="black"))
+        self.main_ui.connnect_button.setIcon(qtawesome.icon('fa.link', color="black"))
+        self.main_ui.disconnect_button.setIcon(qtawesome.icon('fa.chain-broken', color="black"))
+        self.main_ui.cfgfile_button.setIcon(qtawesome.icon('fa.terminal', color="black"))
         # 设置底部任务栏图标和左上角同步
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("myappid")
         self.get_serials_name()#初始化获取系统设备串口连接情况
@@ -108,6 +118,7 @@ class IctTest(QMainWindow, Ui_MainWindow):
         sc = MyStaticMplCanvas(self.main_ui.widget2, width=5, height=4, dpi=100)
         l.addWidget(sc)
 
+
     #右键小弹窗槽函数
     def window_rightMenuShow(self):
         contextMenu = QMenu()
@@ -123,6 +134,7 @@ class IctTest(QMainWindow, Ui_MainWindow):
     # DFE数量下拉值改变触发的槽函数
     def carrier_cfg_tablewidget(self, cc_num):
         self.main_ui.tableWidget_2.clearContents()
+        self.main_ui.tableWidget_2.setSortingEnabled(False) #关闭自动排序，自动排序可能导致内容缺失
         carrierCfg = self.get_cfg()
         a = int(cc_num)
         for i in range(a):
@@ -141,6 +153,7 @@ class IctTest(QMainWindow, Ui_MainWindow):
             self.main_ui.tableWidget_2.setItem(i, 5, item)
             item = QTableWidgetItem('0')
             self.main_ui.tableWidget_2.setItem(i, 6, item)
+        self.main_ui.tableWidget_2.setSortingEnabled(True)#打开自动排序
         # for i in range(a):
         #     chCC = str(i+1)
         #     item = QTableWidgetItem(chCC)
@@ -315,26 +328,30 @@ class IctTest(QMainWindow, Ui_MainWindow):
         except:
             self.operMsgPrint.emit("当前不存在脚本")
 
-    #根据脚本查看
+    #根据脚本配置输入到自定义表格
     def infoByScriptName(self):
         try:
+            self.main_ui.tableWidget_2.clearContents()
             scriptName = self.main_ui.comboBox_2.currentText()
-            data = self.dictScript[scriptName]
-
-            self.cfgInfoDialog = QDialog()
-            self.cfgInfoDialog.setWindowTitle("配置详情")
-            self.cfgInfoDialog.setWindowIcon(qtawesome.icon('fa.magic',color="black"))
-            layout = QHBoxLayout(self.cfgInfoDialog)
-            self.model = QStandardItemModel(2,2)
-            self.model.setHorizontalHeaderLabels(["AxC id","Msgs"])
-            for row in range(2):
-                for column in range(2):
-                    item = QStandardItem("row %s ,column %s"%(row,column))
-                    self.model.setItem(row,column,item)
-            self.tableView = QTableView()
-            self.tableView.setModel(self.model)
-            layout.addWidget(self.tableView)
-            self.cfgInfoDialog.exec_()
+            scriptdata = self.dictScript[scriptName]
+            self.main_ui.combox_compress.setCurrentText(scriptdata['compress'])
+            self.main_ui.combox_interleave.setCurrentText(scriptdata['interleave'])
+            self.main_ui.combox_ccnum.setCurrentText(str(scriptdata['ch_num']))
+            dfenum = scriptdata['ch_num']
+            for i in range(int(dfenum)):
+                item = QTableWidgetItem(scriptdata['data'][i]['msps'])
+                self.main_ui.tableWidget_2.setItem(i, 1, item)
+                item = QTableWidgetItem(scriptdata['data'][i]['width'])
+                self.main_ui.tableWidget_2.setItem(i, 2, item)
+                item = QTableWidgetItem(scriptdata['data'][i]['ch_num'])
+                self.main_ui.tableWidget_2.setItem(i, 3, item)
+                item = QTableWidgetItem(scriptdata['data'][i]['ch_cc'])
+                self.main_ui.tableWidget_2.setItem(i, 4, item)
+                item = QTableWidgetItem(scriptdata['data'][i]['ant_num'])
+                self.main_ui.tableWidget_2.setItem(i, 5, item)
+                item = QTableWidgetItem(scriptdata['data'][i]['offset'])
+                self.main_ui.tableWidget_2.setItem(i, 6, item)
+            QMessageBox.information(self,"提示",'配置信息已导入下方表格')
         except:
             self.operMsgPrint.emit("当前不存在脚本")
 

@@ -257,7 +257,7 @@ color: rgb(0, 0, 255);</string>
              <string notr="true">background-color: rgb(244, 244, 244);color: rgb(0, 0, 255);</string>
             </property>
             <property name="title">
-             <string>自定义DFE 配置</string>
+             <string>DFE 配置</string>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout">
              <item>
@@ -397,6 +397,9 @@ color: rgb(0, 0, 255);</string>
                 <string notr="true">background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);</string>
                </property>
                <property name="alternatingRowColors">
+                <bool>true</bool>
+               </property>
+               <property name="showGrid">
                 <bool>true</bool>
                </property>
                <property name="gridStyle">
@@ -630,7 +633,7 @@ color: rgb(0, 0, 255);</string>
                   <string notr="true">background-color: rgb(227, 227, 227);color: rgb(0, 0, 0);</string>
                  </property>
                  <property name="text">
-                  <string>保存为常用配置</string>
+                  <string>保存配置</string>
                  </property>
                 </widget>
                </item>
@@ -666,9 +669,9 @@ color: rgb(0, 0, 255);</string>
          <widget class="QGroupBox" name="groupBox_7">
           <property name="geometry">
            <rect>
-            <x>0</x>
+            <x>30</x>
             <y>30</y>
-            <width>601</width>
+            <width>501</width>
             <height>55</height>
            </rect>
           </property>
@@ -704,6 +707,12 @@ color: rgb(0, 0, 255);</string>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QGroupBox" name="groupBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="title">
          <string>串口信息打印</string>
         </property>
