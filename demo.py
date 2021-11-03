@@ -28,7 +28,7 @@ logginNum = 0
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
+    def __init__(self, parent=None, width=15, height=4, dpi=100):
         fig = Figure(figsize=(width, height), dpi=dpi)
         self.axes = fig.add_subplot(111)
         self.compute_initial_figure()
@@ -138,21 +138,28 @@ class IctTest(QMainWindow, Ui_MainWindow):
         carrierCfg = self.get_cfg()
         a = int(cc_num)
         for i in range(a):
-            chCC = str(i+1)
-            item = QTableWidgetItem(qtawesome.icon('fa.magic',color="black"),chCC) #设置qtAwesome图标
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,i+1)    #排序按照数值来，不是按照字符，防止字符2>11
             self.main_ui.tableWidget_2.setItem(i, 0, item)
-            item = QTableWidgetItem(carrierCfg[0])
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,7.68)
             self.main_ui.tableWidget_2.setItem(i, 1, item)
-            item = QTableWidgetItem(carrierCfg[3])
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,carrierCfg[3])
             self.main_ui.tableWidget_2.setItem(i, 2, item)
-            item = QTableWidgetItem('1')
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,1)
             self.main_ui.tableWidget_2.setItem(i, 3, item)
-            item = QTableWidgetItem('0')
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,1)
             self.main_ui.tableWidget_2.setItem(i, 4, item)
-            item = QTableWidgetItem('0')
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,1)
             self.main_ui.tableWidget_2.setItem(i, 5, item)
-            item = QTableWidgetItem('0')
+            item = QTableWidgetItem()
+            item.setData(Qt.DisplayRole,1)
             self.main_ui.tableWidget_2.setItem(i, 6, item)
+
         self.main_ui.tableWidget_2.setSortingEnabled(True)#打开自动排序
         # for i in range(a):
         #     chCC = str(i+1)
@@ -238,7 +245,7 @@ class IctTest(QMainWindow, Ui_MainWindow):
         # msps = self.main_ui.comboBox_msps.currentText()
         compressCfg = self.main_ui.combox_compress.currentText()
         interleaveCfg = self.main_ui.combox_interleave.currentText()
-        widthCfg = {'on': '8', 'off': '16'}
+        widthCfg = {'on': 8, 'off': 16}
         width = widthCfg[compressCfg]
         list_resp = ['7.68', compressCfg, interleaveCfg, width]
         return list_resp
@@ -339,18 +346,28 @@ class IctTest(QMainWindow, Ui_MainWindow):
             self.main_ui.combox_ccnum.setCurrentText(str(scriptdata['ch_num']))
             dfenum = scriptdata['ch_num']
             for i in range(int(dfenum)):
-                item = QTableWidgetItem(scriptdata['data'][i]['msps'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, i+1)
+                self.main_ui.tableWidget_2.setItem(i, 0, item)
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['msps']))
                 self.main_ui.tableWidget_2.setItem(i, 1, item)
-                item = QTableWidgetItem(scriptdata['data'][i]['width'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['width']))
                 self.main_ui.tableWidget_2.setItem(i, 2, item)
-                item = QTableWidgetItem(scriptdata['data'][i]['ch_num'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['ch_num']))
                 self.main_ui.tableWidget_2.setItem(i, 3, item)
-                item = QTableWidgetItem(scriptdata['data'][i]['ch_cc'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['ch_cc']))
                 self.main_ui.tableWidget_2.setItem(i, 4, item)
-                item = QTableWidgetItem(scriptdata['data'][i]['ant_num'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['ant_num']))
                 self.main_ui.tableWidget_2.setItem(i, 5, item)
-                item = QTableWidgetItem(scriptdata['data'][i]['offset'])
+                item = QTableWidgetItem()
+                item.setData(Qt.DisplayRole, float(scriptdata['data'][i]['offset']))
                 self.main_ui.tableWidget_2.setItem(i, 6, item)
+
             QMessageBox.information(self,"提示",'配置信息已导入下方表格')
         except:
             self.operMsgPrint.emit("当前不存在脚本")

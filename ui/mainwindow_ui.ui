@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1230</width>
-    <height>836</height>
+    <width>1045</width>
+    <height>871</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,90 +17,6 @@
    <layout class="QHBoxLayout" name="horizontalLayout_6">
     <item>
      <layout class="QVBoxLayout" name="verticalLayout_5">
-      <item>
-       <widget class="QGroupBox" name="groupBox_2">
-        <property name="styleSheet">
-         <string notr="true">background-color: rgb(244, 244, 244);
-color: rgb(0, 0, 255);</string>
-        </property>
-        <property name="title">
-         <string>连接配置</string>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLabel" name="label_3">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(0, 0, 0);</string>
-           </property>
-           <property name="text">
-            <string>COM端口</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="comboBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>80</width>
-             <height>0</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);</string>
-           </property>
-           <property name="editable">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="connnect_button">
-           <property name="styleSheet">
-            <string notr="true">QPushButton{background-color: rgb(227, 227, 227);color: rgb(0, 0, 0);}</string>
-           </property>
-           <property name="text">
-            <string>连接</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="disconnect_button">
-           <property name="styleSheet">
-            <string notr="true">background-color: rgb(227, 227, 227);color: rgb(0, 0, 0);</string>
-           </property>
-           <property name="text">
-            <string>断开</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_6">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="styleSheet">
@@ -118,6 +34,111 @@ color: rgb(0, 0, 255);</string>
            <layout class="QVBoxLayout" name="verticalLayout_4"/>
           </item>
           <item>
+           <widget class="QGroupBox" name="groupBox_2">
+            <property name="styleSheet">
+             <string notr="true">background-color: rgb(244, 244, 244);</string>
+            </property>
+            <property name="title">
+             <string>连接配置</string>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout">
+             <item>
+              <widget class="QLabel" name="label_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">color: rgb(0, 0, 0);</string>
+               </property>
+               <property name="text">
+                <string>COM端口</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);</string>
+               </property>
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label">
+               <property name="styleSheet">
+                <string notr="true">color: rgb(0, 0, 0);</string>
+               </property>
+               <property name="text">
+                <string>波特率</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="btnSerialSpeed">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(255, 255, 255);color: rgb(0, 0, 0);</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>115200</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="connnect_button">
+               <property name="styleSheet">
+                <string notr="true">QPushButton{background-color: rgb(227, 227, 227);color: rgb(0, 0, 0);}</string>
+               </property>
+               <property name="text">
+                <string>连接</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="disconnect_button">
+               <property name="styleSheet">
+                <string notr="true">background-color: rgb(227, 227, 227);color: rgb(0, 0, 0);</string>
+               </property>
+               <property name="text">
+                <string>断开</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
            <widget class="QGroupBox" name="groupBox_5">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -126,7 +147,7 @@ color: rgb(0, 0, 255);</string>
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(244, 244, 244);color: rgb(0, 0, 255);</string>
+             <string notr="true">background-color: rgb(244, 244, 244);</string>
             </property>
             <property name="title">
              <string>系统命令下发</string>
@@ -149,19 +170,6 @@ color: rgb(0, 0, 255);</string>
                </property>
               </widget>
              </item>
-             <item>
-              <spacer name="horizontalSpacer_5">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
             </layout>
            </widget>
           </item>
@@ -174,7 +182,7 @@ color: rgb(0, 0, 255);</string>
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(244, 244, 244);color: rgb(0, 0, 255);</string>
+             <string notr="true">background-color: rgb(244, 244, 244);</string>
             </property>
             <property name="title">
              <string>常用DFE配置</string>
@@ -254,7 +262,7 @@ color: rgb(0, 0, 255);</string>
              </sizepolicy>
             </property>
             <property name="styleSheet">
-             <string notr="true">background-color: rgb(244, 244, 244);color: rgb(0, 0, 255);</string>
+             <string notr="true">background-color: rgb(244, 244, 244);</string>
             </property>
             <property name="title">
              <string>DFE 配置</string>
@@ -669,8 +677,8 @@ color: rgb(0, 0, 255);</string>
          <widget class="QGroupBox" name="groupBox_7">
           <property name="geometry">
            <rect>
-            <x>30</x>
-            <y>30</y>
+            <x>0</x>
+            <y>50</y>
             <width>501</width>
             <height>55</height>
            </rect>
@@ -732,8 +740,7 @@ color: rgb(0, 0, 255);</string>
             <bool>true</bool>
            </property>
            <property name="styleSheet">
-            <string notr="true">font: 9pt &quot;等线&quot;;
-background-color: rgb(217, 255, 226);</string>
+            <string notr="true">font: 9pt &quot;等线&quot;;</string>
            </property>
            <property name="undoRedoEnabled">
             <bool>true</bool>
@@ -761,9 +768,8 @@ background-color: rgb(217, 255, 226);</string>
             </sizepolicy>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(255, 0, 0);
-font: 9pt &quot;等线&quot;;
-background-color: rgb(217, 255, 226);</string>
+            <string notr="true">font: 9pt &quot;等线&quot;;
+color: rgb(255, 0, 0);</string>
            </property>
            <property name="html">
             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -798,17 +804,23 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1230</width>
+     <width>1045</width>
      <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuhelp">
     <property name="title">
-     <string>Help</string>
+     <string>菜单</string>
     </property>
+    <addaction name="actionHelp"/>
    </widget>
    <addaction name="menuhelp"/>
   </widget>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Help</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
